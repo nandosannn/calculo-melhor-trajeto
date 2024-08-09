@@ -36,6 +36,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 {
 	vector<tuple<int, int, int>> pilha; // Usar vector em vez de stack
 	bool visitando[V];
+	vector<int> distancia;
 
 	// Vetor de visitados
 	for ( int i = 0; i < V; i++)
@@ -63,6 +64,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		{
 			if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
 			{
+				
 				achou = true;
 				break;
 			}
@@ -74,8 +76,11 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			v = get<0>(*it);
 			distanciaAcumulada += get<1>(*it);
 			tipoTransporte = get<2>(*it);
+			distancia.push_back(get<1>(*it));
 		}
 		else{
+			distanciaAcumulada -= distancia.back();
+			distancia.pop_back();
 			pilha.pop_back();
 			
 			if (pilha.empty())
