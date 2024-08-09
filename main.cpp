@@ -58,6 +58,7 @@ int main(int argc, char const *argv[])
             cidades.insert(idDestino);
         }
 
+        
         Cidade *cidadeOrigem = new Cidade(idOrigem, nomeCidadeOrigem);
         Cidade *cidadeDestino = new Cidade(idDestino, nomeCidadeDestino);
 

@@ -37,13 +37,13 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 	vector<tuple<int, int, int>> pilha; // Usar vector em vez de stack
 	bool visitando[V];
 	vector<int> distancia;
-
+	vector<tuple<vector<tuple<int, int, int>>, int>> conexoes; // Corrigido o tipo
 	// Vetor de visitados
-	for ( int i = 0; i < V; i++)
+	for (int i = 0; i < V; i++)
 	{
 		visitando[i] = false;
 	}
-	
+
 	// Adiciona o vértice inicial na pilha
 	tuple<int, int, int> tupla;
 	int distanciaAcumulada = 0;
@@ -52,23 +52,31 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		if (!visitando[v])
 		{
 			cout << "Visitando vertice " << v << ", distancia acumulada: " << distanciaAcumulada << ", tipo do trajeto: " << tipoTransporte << endl;
-			visitando[v] = true; // marca como visitado
+			//marcar como visitado
+			visitando[v] = true;	
 			pilha.push_back(make_tuple(v, distanciaAcumulada, tipoTransporte)); // insere "v" na pilha
 		}
 
 		bool achou = false;
+		bool achouDestino = false;
 		list<tuple<int, int, int>>::iterator it;
-		
-		// Percorre os vizinhos
-		for (it = adj[v].begin(); it != adj[v].end(); it++)
+
+		if (v == w)
 		{
-			if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
+			achouDestino = true;
+		}
+		else
+		{
+			// Percorre os vizinhos
+			for (it = adj[v].begin(); it != adj[v].end(); it++)
 			{
+				if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
+				{
+					achou = true;
+					break;
+				}
 				
-				achou = true;
-				break;
 			}
-			
 		}
 
 		if (achou)
@@ -78,19 +86,42 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			tipoTransporte = get<2>(*it);
 			distancia.push_back(get<1>(*it));
 		}
-		else{
-			distanciaAcumulada -= distancia.back();
-			distancia.pop_back();
+		else
+		{	
+			
+			if (achouDestino)
+			{
+				conexoes.push_back(make_tuple(pilha, distanciaAcumulada)); // Armazena a pilha e a distância acumulada
+			}
+			
+
+			if (!distancia.empty())
+			{
+				distanciaAcumulada -= distancia.back();
+				distancia.pop_back();
+			}
 			pilha.pop_back();
 			
 			if (pilha.empty())
 			{
+				
+				for (size_t i = 0; i < conexoes.size(); i++)
+				{
+					cout << "Conexão #" << i + 1 << endl;
+					vector<tuple<int, int, int>> caminho = get<0>(conexoes[i]);
+					for (size_t j = 0; j < caminho.size(); j++)
+					{
+						cout << "Cidade: " << get<0>(caminho[j]) << " - Distancia: " << get<1>(caminho[j]) << " - Tipo Transporte: " << get<2>(caminho[j]) << endl;
+					}
+					cout << "Distância Acumulada: " << get<1>(conexoes[i]) << endl;
+				}
+				
+
 				break;
 			}
 			tupla = pilha.back();
 			v = get<0>(tupla);
 			tipoTransporte = get<2>(tupla);
 		}
-		
 	}
 }
