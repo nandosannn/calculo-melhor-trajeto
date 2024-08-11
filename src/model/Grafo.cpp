@@ -63,10 +63,33 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 
 		bool achou = false;
 		bool achouDestino = false;
-		list<tuple<int, int, int>>::iterator it;
+		
+		list<tuple<int, int, int>>::iterator vz;
+		if (regrediu == false && visitando[w] == true)
+		{
+			// Verificar se algum dos vizinho é o destino já visitado
+			for (vz = adj[v].begin(); vz != adj[v].end(); vz++)
+			{
+				if (visitando[get<0>(*vz)] == true && get<0>(*vz) == w)
+				{
+					cout << "Um dos vizinhos é o destino colocar no vector" << endl;
+					break;
+				}
+			}
+		}
 
+		// Resetar regrediu
+		if (regrediu)
+		{
+			cout << "Passando na cidade " << v << " de novo." << endl;
+			regrediu = false;
+		}
+
+		list<tuple<int, int, int>>::iterator it;
+		//Sinalizar quando o primeiro destino não visitador for encontrado
 		if (v == w)
 		{
+			
 			cout << "Valor de v dentro de if(v==w): " << v << endl;
 			achouDestino = true;
 		}
@@ -75,27 +98,6 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			// Percorre os vizinhos
 			for (it = adj[v].begin(); it != adj[v].end(); it++)
 			{
-				list<tuple<int, int, int>>::iterator vz;
-				if (regrediu == false)
-				{
-					//Verificar se algum dos vizinho é o destino já visitado
-					for (vz = adj[v].begin(); vz != adj[v].end(); vz++)
-					{
-						if (visitando[get<0>(*vz)] == true && get<0>(*vz) == w)
-						{
-							cout << "Um dos vizinhos é o destino colocar no vector" << endl;
-							break;
-						}
-						
-					}
-				}
-
-				//Resetar regrediu
-				if (regrediu)
-				{
-					cout << "Passando na cidade " << v << " de novo."<< endl;
-					regrediu = false;
-				}
 				
 				//Verufucar se o próximo vizinho não foi visitado
 				cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
@@ -120,7 +122,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		//Se não, voltar para cidade anterior e, assim, fazer uma nova busca por um vizinho não visitado
 		else
 		{	
-			//Sinalizar quando o primeiro destino não visitador for encontrado
+			//Para adicionar ao vector quando o primeiro destino for encontrado
 			if (achouDestino)
 			{
 				conexoes.push_back(make_tuple(pilha, distanciaAcumulada)); // Armazena a pilha e a distância acumulada
