@@ -14,16 +14,39 @@ int main(int argc, char const *argv[])
 {
     string nomeCidadeOrigem;
     string nomeCidadeDestino;
-    int idOrigem;
-    int idDestino;
-    int distancia;
+    //int idOrigem;
+    //int idDestino;
+    //int distancia;
     int tipo;
-    set<int> cidades; // Usar set para evitar duplicatas
+    //set<int> cidades; // Usar set para evitar duplicatas
 
-    Trajeto *trajeto;
-    vector<Trajeto *> trajetos;
-    int opcao = 0;
+    //Cadastro direto por enqaunto para adiantar os testes
+    vector<Cidade*> cidades;
+    Cidade* cidade1 = new Cidade(1, "Natal");
+    Cidade* cidade2 = new Cidade(2, "Monte Alegre");
+    Cidade* cidade3 = new Cidade(3, "Pipa");
+    Cidade* cidade4 = new Cidade(4, "Ceara Mirin");
 
+    cidades.push_back(cidade1);
+    cidades.push_back(cidade2);
+    cidades.push_back(cidade3);
+    cidades.push_back(cidade4);
+    
+
+    Trajeto *trajeto1 = new Trajeto(cidade1, cidade2, 15, 1);
+    Trajeto *trajeto2 = new Trajeto(cidade2, cidade3, 15, 1);
+    Trajeto *trajeto3 = new Trajeto(cidade1, cidade4, 15, 1);
+    Trajeto *trajeto4 = new Trajeto(cidade4, cidade3, 15, 1);
+    
+    vector<Trajeto*> trajetos;
+
+    trajetos.push_back(trajeto1);
+    trajetos.push_back(trajeto2);
+    trajetos.push_back(trajeto3);
+    trajetos.push_back(trajeto4);
+
+    //int opcao = 0;
+    /*
     do
     {
         // Cidade Origem
@@ -79,6 +102,7 @@ int main(int argc, char const *argv[])
         cin.ignore();
 
     } while (opcao == 1);
+    */
 
     // Cadastro Viagem
     int partida;

@@ -37,6 +37,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 	vector<tuple<int, int, int>> pilha; // Usar vector em vez de stack
 	bool visitando[V];
 	vector<int> distancia;
+	bool regrediu = false;
 	vector<tuple<vector<tuple<int, int, int>>, int>> conexoes; // Corrigido o tipo
 	// Vetor de visitados
 	for (int i = 0; i < V; i++)
@@ -49,6 +50,9 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 	int distanciaAcumulada = 0;
 	while (true)
 	{
+		cout << "Valor de v no inicio de While: " << v << endl;
+		
+		//Visitando os vizinhos não visitados
 		if (!visitando[v])
 		{
 			cout << "Visitando vertice " << v << ", distancia acumulada: " << distanciaAcumulada << ", tipo do trajeto: " << tipoTransporte << endl;
@@ -63,6 +67,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 
 		if (v == w)
 		{
+			cout << "Valor de v dentro de if(v==w): " << v << endl;
 			achouDestino = true;
 		}
 		else
@@ -70,6 +75,30 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			// Percorre os vizinhos
 			for (it = adj[v].begin(); it != adj[v].end(); it++)
 			{
+				list<tuple<int, int, int>>::iterator vz;
+				if (regrediu == false)
+				{
+					//Verificar se algum dos vizinho é o destino já visitado
+					for (vz = adj[v].begin(); vz != adj[v].end(); vz++)
+					{
+						if (visitando[get<0>(*vz)] == true && get<0>(*vz) == w)
+						{
+							cout << "Um dos vizinhos é o destino colocar no vector" << endl;
+							break;
+						}
+						
+					}
+				}
+
+				//Resetar regrediu
+				if (regrediu)
+				{
+					cout << "Passando na cidade " << v << " de novo."<< endl;
+					regrediu = false;
+				}
+				
+				//Verufucar se o próximo vizinho não foi visitado
+				cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
 				if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
 				{
 					achou = true;
@@ -79,6 +108,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			}
 		}
 
+		//Se algum vizinho não tiver sido visitado, visita-lo.
 		if (achou)
 		{
 			v = get<0>(*it);
@@ -86,9 +116,11 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			tipoTransporte = get<2>(*it);
 			distancia.push_back(get<1>(*it));
 		}
+
+		//Se não, voltar para cidade anterior e, assim, fazer uma nova busca por um vizinho não visitado
 		else
 		{	
-			
+			//Sinalizar quando o primeiro destino não visitador for encontrado
 			if (achouDestino)
 			{
 				conexoes.push_back(make_tuple(pilha, distanciaAcumulada)); // Armazena a pilha e a distância acumulada
@@ -99,7 +131,9 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			{
 				distanciaAcumulada -= distancia.back();
 				distancia.pop_back();
+				regrediu = true;
 			}
+			
 			pilha.pop_back();
 			
 			if (pilha.empty())
