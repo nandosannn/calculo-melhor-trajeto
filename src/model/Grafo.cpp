@@ -50,7 +50,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 	int distanciaAcumulada = 0;
 	while (true)
 	{
-		cout << "Valor de v no inicio de While: " << v << endl;
+		//cout << "Valor de v no inicio de While: " << v << endl;
 		
 		//Visitando os vizinhos não visitados
 		if (!visitando[v])
@@ -72,7 +72,10 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			{
 				if (visitando[get<0>(*vz)] == true && get<0>(*vz) == w)
 				{
-					cout << "Um dos vizinhos é o destino colocar no vector" << endl;
+					//cout << "Um dos vizinhos é o destino colocar no vector" << endl;
+					pilha.push_back(make_tuple(get<0>(*vz), get<1>(*vz) + distanciaAcumulada, get<2>(*vz)));
+					conexoes.push_back(make_tuple(pilha,get<1>(*vz) + distanciaAcumulada)); // Armazena a pilha e a distância acumulada
+					pilha.pop_back();
 					break;
 				}
 			}
@@ -81,7 +84,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		// Resetar regrediu
 		if (regrediu)
 		{
-			cout << "Passando na cidade " << v << " de novo." << endl;
+			//cout << "Passando na cidade " << v << " de novo." << endl;
 			regrediu = false;
 		}
 
@@ -90,7 +93,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		if (v == w)
 		{
 			
-			cout << "Valor de v dentro de if(v==w): " << v << endl;
+			//cout << "Valor de v dentro de if(v==w): " << v << endl;
 			achouDestino = true;
 		}
 		else
@@ -100,7 +103,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 			{
 				
 				//Verufucar se o próximo vizinho não foi visitado
-				cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
+				//cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
 				if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
 				{
 					achou = true;
