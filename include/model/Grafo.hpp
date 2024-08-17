@@ -22,7 +22,9 @@ public:
     void adicionarAresta(std::vector<Trajeto*> trajetos);
 
     // Ajuste na assinatura do método dfs para incluir destino e tipo de transporte
-    void dfs(int partida, int destino, int tipoTransporte);
+    void dfs(int partida, int destino, int tipoTransporte, std::vector<Trajeto*> trajetos);
+
+    vector<Trajeto*> melhorRota(vector<tuple<vector<tuple<int, int, int>>, int>> rotas, vector<Trajeto*> trajetos);
 };
 
 #endif // GRAFO_HPP

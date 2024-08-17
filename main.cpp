@@ -14,29 +14,35 @@ int main(int argc, char const *argv[])
 {
     string nomeCidadeOrigem;
     string nomeCidadeDestino;
-    //int idOrigem;
-    //int idDestino;
-    //int distancia;
+    int idOrigem;
+    int idDestino;
+    int distancia;
     int tipo;
-    //set<int> cidades; // Usar set para evitar duplicatas
-
+    Trajeto* trajeto;
+    vector<Trajeto*> trajetos;
+    set<int> cidades; // Usar set para evitar duplicatas
+    
     //Cadastro direto por enqaunto para adiantar os testes
+    /*
     vector<Cidade*> cidades;
     Cidade* cidade1 = new Cidade(1, "Natal");
     Cidade* cidade2 = new Cidade(2, "Monte Alegre");
     Cidade* cidade3 = new Cidade(3, "Pipa");
     Cidade* cidade4 = new Cidade(4, "Ceara Mirin");
+    Cidade* cidade5 = new Cidade(5, "Macau");
 
     cidades.push_back(cidade1);
     cidades.push_back(cidade2);
     cidades.push_back(cidade3);
     cidades.push_back(cidade4);
+    cidades.push_back(cidade5);
     
 
     Trajeto *trajeto1 = new Trajeto(cidade1, cidade2, 15, 1);
     Trajeto *trajeto2 = new Trajeto(cidade2, cidade3, 15, 1);
-    Trajeto *trajeto3 = new Trajeto(cidade1, cidade4, 15, 1);
-    Trajeto *trajeto4 = new Trajeto(cidade4, cidade3, 15, 1);
+    Trajeto *trajeto3 = new Trajeto(cidade1, cidade4, 30, 1);
+    Trajeto *trajeto4 = new Trajeto(cidade4, cidade3, 30, 1);
+    Trajeto *trajeto5 = new Trajeto(cidade4, cidade5, 15, 1);
     
     vector<Trajeto*> trajetos;
 
@@ -44,9 +50,11 @@ int main(int argc, char const *argv[])
     trajetos.push_back(trajeto2);
     trajetos.push_back(trajeto3);
     trajetos.push_back(trajeto4);
+    trajetos.push_back(trajeto5);
+    */
 
-    //int opcao = 0;
-    /*
+    int opcao = 0;
+    
     do
     {
         // Cidade Origem
@@ -102,7 +110,6 @@ int main(int argc, char const *argv[])
         cin.ignore();
 
     } while (opcao == 1);
-    */
 
     // Cadastro Viagem
     int partida;
@@ -120,7 +127,7 @@ int main(int argc, char const *argv[])
 
     Grafo *grafo = new Grafo(tamanho);
     grafo->adicionarAresta(trajetos);
-    grafo->dfs(partida, destino, tipo); // Corrigir chamada para incluir tipo
+    grafo->dfs(partida, destino, tipo, trajetos); // Corrigir chamada para incluir tipo
 
     // Liberação da memória dos trajetos e do grafo
     for (auto t : trajetos)

@@ -32,7 +32,52 @@ void Grafo::adicionarAresta(vector<Trajeto *> trajetos)
 	}
 }
 
-void Grafo::dfs(int v, int w, int tipoTransporte)
+vector<Trajeto*> Grafo::melhorRota(vector<tuple<vector<tuple<int, int, int>>, int>> rotas, vector<Trajeto*> trajetos){
+	vector<Trajeto*> melhorTrajeto;
+	vector<tuple<int, int, int>> caminho;
+	
+	int menorDistancia = get<1>(rotas[0]);
+	caminho = get<0>(rotas[0]);
+	for (size_t i = 1; i < rotas.size(); i++)
+	{
+		if (get<1>(rotas[i]) < menorDistancia)
+		{
+			menorDistancia = get<1>(rotas[i]);
+			caminho = get<0>(rotas[i]);
+		}
+		
+	}
+
+	cout << "Menor distancia: " << menorDistancia << endl; 
+	for (size_t i = 0; i < caminho.size(); i++)
+	{
+		cout << "Cidade #" << i+1 << " - código: "<< get<0>(caminho[i]) << endl;
+	}
+
+	for (size_t i = 0; i < caminho.size() - 1; i++)
+	{
+		for (size_t j = 0; j < trajetos.size(); j++)
+		{
+			if (trajetos[j]->getCidadeOrigem()->getId() == get<0>(caminho[i]) && trajetos[j]->getCidadeDestino()->getId() == get<0>(caminho[i+1]))
+			{
+				melhorTrajeto.push_back(trajetos[j]);
+			}
+			
+		}
+		
+	}
+
+	for (size_t i = 0; i < melhorTrajeto.size(); i++)
+	{
+		cout << "Trajeto #" << i+1 << " - Cidade de Origem: " << melhorTrajeto[i]->getCidadeOrigem()->getId() << " - Cidade Destino: " << melhorTrajeto[i]->getCidadeDestino()->getId() << endl;
+	}
+	
+	return melhorTrajeto;
+	
+	
+}
+
+void Grafo::dfs(int v, int w, int tipoTransporte, std::vector<Trajeto*> trajetos)
 {
 	vector<tuple<int, int, int>> pilha; // Usar vector em vez de stack
 	bool visitando[V];
@@ -62,16 +107,19 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		}
 
 		bool achou = false;
-		bool achouDestino = false;
+		
 		
 		list<tuple<int, int, int>>::iterator vz;
-		if (regrediu == false && visitando[w] == true)
+		if (regrediu == false)
 		{
 			// Verificar se algum dos vizinho é o destino já visitado
 			for (vz = adj[v].begin(); vz != adj[v].end(); vz++)
 			{
-				if (visitando[get<0>(*vz)] == true && get<0>(*vz) == w)
+				
+				if (get<0>(*vz) == w && get<2>(*vz) == tipoTransporte)
 				{
+					
+					visitando[w] = true;
 					//cout << "Um dos vizinhos é o destino colocar no vector" << endl;
 					pilha.push_back(make_tuple(get<0>(*vz), get<1>(*vz) + distanciaAcumulada, get<2>(*vz)));
 					conexoes.push_back(make_tuple(pilha,get<1>(*vz) + distanciaAcumulada)); // Armazena a pilha e a distância acumulada
@@ -89,27 +137,16 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		}
 
 		list<tuple<int, int, int>>::iterator it;
-		//Sinalizar quando o primeiro destino não visitador for encontrado
-		if (v == w)
+		// Percorre os vizinhos
+		for (it = adj[v].begin(); it != adj[v].end(); it++)
 		{
-			
-			//cout << "Valor de v dentro de if(v==w): " << v << endl;
-			achouDestino = true;
-		}
-		else
-		{
-			// Percorre os vizinhos
-			for (it = adj[v].begin(); it != adj[v].end(); it++)
+
+			// Verufucar se o próximo vizinho não foi visitado
+			// cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
+			if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
 			{
-				
-				//Verufucar se o próximo vizinho não foi visitado
-				//cout << "Valor de *ït: " << get<0>(*it) << " - Valor de visitando[get<0>(*it)]: " <<  visitando[get<0>(*it)] << " - Valor visitando[v]: " << visitando[v] << endl;
-				if (!visitando[get<0>(*it)] && get<2>(*it) == tipoTransporte)
-				{
-					achou = true;
-					break;
-				}
-				
+				achou = true;
+				break;
 			}
 		}
 
@@ -125,13 +162,6 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 		//Se não, voltar para cidade anterior e, assim, fazer uma nova busca por um vizinho não visitado
 		else
 		{	
-			//Para adicionar ao vector quando o primeiro destino for encontrado
-			if (achouDestino)
-			{
-				conexoes.push_back(make_tuple(pilha, distanciaAcumulada)); // Armazena a pilha e a distância acumulada
-			}
-			
-
 			if (!distancia.empty())
 			{
 				distanciaAcumulada -= distancia.back();
@@ -155,6 +185,7 @@ void Grafo::dfs(int v, int w, int tipoTransporte)
 					cout << "Distância Acumulada: " << get<1>(conexoes[i]) << endl;
 				}
 				
+				melhorRota(conexoes, trajetos);
 
 				break;
 			}
