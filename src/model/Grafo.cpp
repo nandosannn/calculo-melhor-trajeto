@@ -1,7 +1,4 @@
 #include "../../include/model/Grafo.hpp"
-#include <tuple>
-#include <vector>
-#include <iostream>
 
 using namespace std;
 
@@ -77,12 +74,13 @@ vector<Trajeto*> Grafo::melhorRota(vector<tuple<vector<tuple<int, int, int>>, in
 	
 }
 
-void Grafo::dfs(int v, int w, int tipoTransporte, std::vector<Trajeto*> trajetos)
+vector<Trajeto*> Grafo::dfs(int v, int w, int tipoTransporte, std::vector<Trajeto*> trajetos)
 {
 	vector<tuple<int, int, int>> pilha; // Usar vector em vez de stack
 	bool visitando[V];
 	vector<int> distancia;
 	bool regrediu = false;
+	vector<Trajeto*> melhorTrajeto;
 	vector<tuple<vector<tuple<int, int, int>>, int>> conexoes; // Corrigido o tipo
 	// Vetor de visitados
 	for (int i = 0; i < V; i++)
@@ -119,7 +117,11 @@ void Grafo::dfs(int v, int w, int tipoTransporte, std::vector<Trajeto*> trajetos
 				if (get<0>(*vz) == w && get<2>(*vz) == tipoTransporte)
 				{
 					
-					visitando[w] = true;
+					if (visitando[w] == false)
+					{
+						visitando[w] = true;
+					}
+					
 					//cout << "Um dos vizinhos é o destino colocar no vector" << endl;
 					pilha.push_back(make_tuple(get<0>(*vz), get<1>(*vz) + distanciaAcumulada, get<2>(*vz)));
 					conexoes.push_back(make_tuple(pilha,get<1>(*vz) + distanciaAcumulada)); // Armazena a pilha e a distância acumulada
@@ -185,7 +187,12 @@ void Grafo::dfs(int v, int w, int tipoTransporte, std::vector<Trajeto*> trajetos
 					cout << "Distância Acumulada: " << get<1>(conexoes[i]) << endl;
 				}
 				
-				melhorRota(conexoes, trajetos);
+				if (conexoes.empty())
+				{
+					return melhorTrajeto;
+				}
+				
+				return melhorRota(conexoes, trajetos);
 
 				break;
 			}

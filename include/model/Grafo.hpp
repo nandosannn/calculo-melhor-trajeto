@@ -6,7 +6,6 @@
 #include <list>
 #include <tuple>
 #include "Trajeto.hpp"
-#include <stack>
 
 using namespace std;
 
@@ -22,7 +21,7 @@ public:
     void adicionarAresta(std::vector<Trajeto*> trajetos);
 
     // Ajuste na assinatura do método dfs para incluir destino e tipo de transporte
-    void dfs(int partida, int destino, int tipoTransporte, std::vector<Trajeto*> trajetos);
+    vector<Trajeto*> dfs(int partida, int destino, int tipoTransporte, std::vector<Trajeto*> trajetos);
 
     vector<Trajeto*> melhorRota(vector<tuple<vector<tuple<int, int, int>>, int>> rotas, vector<Trajeto*> trajetos);
 };

@@ -18,43 +18,13 @@ int main(int argc, char const *argv[])
     int idDestino;
     int distancia;
     int tipo;
-    Trajeto* trajeto;
-    vector<Trajeto*> trajetos;
+    Trajeto *trajeto;
+    vector<Trajeto *> trajetos;
     set<int> cidades; // Usar set para evitar duplicatas
-    
-    //Cadastro direto por enqaunto para adiantar os testes
-    /*
-    vector<Cidade*> cidades;
-    Cidade* cidade1 = new Cidade(1, "Natal");
-    Cidade* cidade2 = new Cidade(2, "Monte Alegre");
-    Cidade* cidade3 = new Cidade(3, "Pipa");
-    Cidade* cidade4 = new Cidade(4, "Ceara Mirin");
-    Cidade* cidade5 = new Cidade(5, "Macau");
-
-    cidades.push_back(cidade1);
-    cidades.push_back(cidade2);
-    cidades.push_back(cidade3);
-    cidades.push_back(cidade4);
-    cidades.push_back(cidade5);
-    
-
-    Trajeto *trajeto1 = new Trajeto(cidade1, cidade2, 15, 1);
-    Trajeto *trajeto2 = new Trajeto(cidade2, cidade3, 15, 1);
-    Trajeto *trajeto3 = new Trajeto(cidade1, cidade4, 30, 1);
-    Trajeto *trajeto4 = new Trajeto(cidade4, cidade3, 30, 1);
-    Trajeto *trajeto5 = new Trajeto(cidade4, cidade5, 15, 1);
-    
-    vector<Trajeto*> trajetos;
-
-    trajetos.push_back(trajeto1);
-    trajetos.push_back(trajeto2);
-    trajetos.push_back(trajeto3);
-    trajetos.push_back(trajeto4);
-    trajetos.push_back(trajeto5);
-    */
+    vector<Trajeto *> melhorTrajeto;
 
     int opcao = 0;
-    
+
     do
     {
         // Cidade Origem
@@ -89,7 +59,6 @@ int main(int argc, char const *argv[])
             cidades.insert(idDestino);
         }
 
-        
         Cidade *cidadeOrigem = new Cidade(idOrigem, nomeCidadeOrigem);
         Cidade *cidadeDestino = new Cidade(idDestino, nomeCidadeDestino);
 
@@ -98,7 +67,6 @@ int main(int argc, char const *argv[])
 
         cout << "Escreva o tipo do Transporte (1 para Terrestre, 2 para Aquático, 3 para Aéreo): ";
         cin >> tipo;
-
 
         trajeto = new Trajeto(cidadeOrigem, cidadeDestino, distancia, tipo);
         trajetos.push_back(trajeto);
@@ -127,14 +95,32 @@ int main(int argc, char const *argv[])
 
     Grafo *grafo = new Grafo(tamanho);
     grafo->adicionarAresta(trajetos);
-    grafo->dfs(partida, destino, tipo, trajetos); // Corrigir chamada para incluir tipo
+    melhorTrajeto = grafo->dfs(partida, destino, tipo, trajetos); // Corrigir chamada para incluir tipo
+
+    if (melhorTrajeto.empty())
+    {
+        cout << "Nenhum trajeto encontrado!" << endl;
+        for (auto t : trajetos)
+        {
+            delete t;
+        }
+        delete grafo;
+
+        return 0;
+    }
 
     // Liberação da memória dos trajetos e do grafo
+    for (auto t : melhorTrajeto)
+    {
+        delete t;
+    }
+
     for (auto t : trajetos)
     {
         delete t;
     }
     delete grafo;
+    
 
     return 0;
 }
